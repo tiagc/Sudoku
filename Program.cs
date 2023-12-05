@@ -5,6 +5,7 @@
         int[,] playfield = new int[9, 9];
 
         //Sudoku Werte setzen
+
         playfield[0, 0] = 3;
         playfield[0, 3] = 6;
         playfield[0, 7] = 9;
@@ -38,6 +39,12 @@
         playfield[8, 5] = 5;
         playfield[8, 8] = 8;
 
+        while (IsCompleted(playfield) == false)
+        {
+            DisplaySudoku(playfield);
+            EnterValue(playfield);
+        }
+
         //var m = 4 + 9;
         //var p = "a" + "b" + "c";
         //var u = "a" + 7 + "b" + "c";
@@ -45,11 +52,27 @@
 
         DisplaySudoku(playfield);
 
-        CheckValue(playfield);
+        EnterValue(playfield);
+
+        IsCompleted(playfield);
+    }
+
+    public static bool IsCompleted(int[,] playfield)
+    {
+        for (int sReihe = 0; sReihe <= 8; sReihe++)
+        {
+            for (int sSpalte = 0; sSpalte <= 8; sSpalte++)
+            {
+                if (playfield[sReihe, sSpalte] == 0)
+                    return false;
+            }
+        }
+        return true;
     }
 
     public static void DisplaySudoku(int[,] playfield)
     {
+        Console.Clear();
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("Sudokuuu!");
 
@@ -85,7 +108,7 @@
         }
     }
 
-    public static bool CheckValue(int[,] playfield)
+    public static bool EnterValue(int[,] playfield)
     {
         Console.WriteLine("Gebe eine Zahl ein");
        
@@ -115,40 +138,81 @@
         spalteEingabe = spalteEingabe - 1;
 
         // Prüfe, ob der eingegebe Wert in der eingegeben Reihe bereits vorkommt
+
         for(int spalte = 0; spalte <= 8; spalte++)
         {
             if (playfield[reiheEingabe, spalte] == wert)
             {
-            Console.WriteLine("Die eingegebene Zahl kommt bereits auf der selben Reihe vor");
+                Console.WriteLine("Die eingegebene Zahl kommt bereits auf der selben Reihe vor.");
                 return false;
             }
         }
 
         // Prüfe, ob der eingegebe Wert in der eingegeben Spalte bereits vorkommt
+
         for (int reihe = 0; reihe <= 8; reihe++)
         {
             if (playfield[reihe, spalteEingabe] == wert)
             {
-            Console.WriteLine("Die eingegebene Zahl kommt bereits auf der selben Spalte vor");
+                Console.WriteLine("Die eingegebene Zahl kommt bereits auf der selben Spalte vor.");
                 return false;
             }
         }
 
         // Prüfe, ob der eingegebene Wert im 3x3 Block bereits vorkommt
-        for (int reihe = 4; reihe <= 6; reihe++)
+
+        int startReihe = 0;
+
+        if (reiheEingabe == 0 || reiheEingabe == 1 || reiheEingabe == 2)
         {
-            for (int spalte = 1; spalte <= 3; spalte++)
+            startReihe = 0;
+        }
+
+        if (reiheEingabe == 3 || reiheEingabe == 4 || reiheEingabe == 5)
+        {
+            startReihe = 3;
+        }
+
+        if (reiheEingabe == 6 || reiheEingabe == 7 || reiheEingabe == 8)
+        {
+            startReihe = 6;
+        }
+
+        int endReihe = startReihe + 2;
+
+        int startSpalte = 0;
+
+        if (spalteEingabe == 0 || spalteEingabe == 1 || spalteEingabe == 2)
+        {
+            startSpalte = 0;
+        }
+
+        if (spalteEingabe == 3 || spalteEingabe == 4 || spalteEingabe == 5)
+        {
+            startSpalte = 3;
+        }
+
+        if (spalteEingabe == 6 || spalteEingabe == 7 || spalteEingabe == 8)
+        {
+            startSpalte = 6;
+        }
+
+        int endSpalte = startSpalte + 2;
+
+        for (int sReihe = startReihe; sReihe <= endReihe; sReihe++)
+        {
+            for (int sSpalte = startSpalte; sSpalte <= endSpalte; sSpalte++)
             {
-                if (playfield[reihe, spalte] == wert)
+                if (playfield[sReihe, sSpalte] == wert)
                 {
+                    Console.WriteLine("Die eingegebene Zahl kommt bereits im selben Block vor.");
                     return false;
                 }
             }
         }
-
-
+        playfield[reiheEingabe, spalteEingabe] = wert;
+        DisplaySudoku(playfield);
 
         return true;
-
     }
 }
